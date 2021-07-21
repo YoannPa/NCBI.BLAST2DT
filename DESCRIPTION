@@ -1,0 +1,18 @@
+Package: NCBI.BLAST2DT
+Type: Package
+Title: Submit DNA sequences to NCBI BLAST and get hits results in an R data.table.
+Version: 0.1.0
+Authors@R: 
+    person(given = "Yoann",
+           family = "Pageaud",
+           role = c("aut", "cre"),
+           email = "y.pageaud@dkfz.de",
+           comment = c(ORCID = "https://orcid.org/0000-0002-1392-1744"))
+Description: NCBI.BLAST2DT is a R package allowing you to submit DNA sequences to NCBI BLAST servers, to retrieve potential hits on a selected genome or sequence database, and to collect all results within an R data.table.
+License: GPL-3.0
+Encoding: UTF-8
+LazyData: true
+Depends:
+    hoardeR,
+    data.table
+RoxygenNote: 7.1.1

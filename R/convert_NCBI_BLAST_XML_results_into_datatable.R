@@ -2,10 +2,12 @@
 #' Converts NCBI BLAST XML result file into an R data.table.
 #' 
 #' @param xml_file A \code{character} specifying the path to a XML file
-#'                containing NCBI BLAST results. Such XML file can either be
-#'                downloaded directly from the NCBI BLAST result page, or
-#'                automatically generated using blastSeq() function from the
-#'                R package hoardeR.
+#'                containing NCBI BLAST results. Such XML file can either be:
+#'                \itemize{
+#'                 \item{downloaded directly from the NCBI BLAST result page.}
+#'                 \item{retrieved from the result directory you specified when using \link{submit_NCBI_BLAST}.}
+#'                 \item{generated using blastSeq() function from the R package hoardeR.}
+#'                }
 #' @return A \code{data.table} of the NCBI BLAST results.
 #' @author Yoann Pageaud.
 #' @export
@@ -86,7 +88,9 @@ NCBI_BLAST_XML2DT <- function(xml_file){
 #' Aggregates NCBI BLAST results from multiple XML files into an R data.table.
 #' 
 #' @param dir.to.xmls A \code{character} specifying a directory to be searched
-#'                    recursively for NCBI BLAST XML results.
+#'                    recursively for NCBI BLAST XML results (For more
+#'                    information about XML results from NCBI BLAST see
+#'                    \link{NCBI_BLAST_XML2DT}).
 #' @param ncores      An \code{integer} specifying the number of cores or
 #'                    threads to be used for parallel processing.
 #' @return A \code{data.table} aggregating all NCBI BLAST results from all XML
