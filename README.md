@@ -1,5 +1,6 @@
 # NCBI.BLAST2DT - Submit DNA sequences to NCBI BLAST and get results in an R data.table.
 _**NCBI.BLAST2DT** is an R package allowing you to submit DNA sequences to NCBI BLAST servers directly from the console, to retrieve potential hits on a genome or sequence database, and to collect all results within an R data.table._  
+_It makes use of the R package hoardeR to submit sequences to the NCBI BLAST API, and then parses the XML BLAST results returned to load them as an R data.table to make it more easy to query, sort, order and subset the resulting hits._  
 **Author: PAGEAUD Y.<sup>1</sup>**  
 **1-** [**DKFZ - Division of Applied Bioinformatics, Germany.**](https://www.dkfz.de/en/applied-bioinformatics/index.php)  
 **Version: 0.0.4 (Beta)**  
