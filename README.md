@@ -44,7 +44,7 @@ devtools::install()
 For any questions **Not related to bugs or development** please check the section "**Known Issues**" available below. If the issue you experience is not adressed in the known issues you can write me at [y.pageaud@dkfz.de](y.pageaud@dkfz.de).
 
 ### Known Issues
-**❎ submit_NCBI_BLAST() not responding**
+**❎ submit_NCBI_BLAST() not responding**  
 Sometimes `submit_NCBI_BLAST()` can stop responding, or crash, while expecting a BLAST submission result from NCBI servers. If so:
 1. Check the log displayed by the console to identify the submission failing.
 2. Stop R execution.
@@ -52,9 +52,12 @@ Sometimes `submit_NCBI_BLAST()` can stop responding, or crash, while expecting a
 4. Restart R.
 5. Execute again the same command using the function `submit_NCBI_BLAST()`: The sequence for which results have already been generated will be automatically skipped, and submission will restart by the last failed submission.
 
-**⚠️ Not getting any hits from the XMLs of submitted sequences when I expect some**
+**⚠️ Not getting any hits from the XMLs of submitted sequences when I expect some**  
 NCBI database names are not well defined anywhere: it can be tricky to find the right one.
 For example, to BLAST sequences against the human genome assembly hg19 version, one must specify `db = "genomic/9606/GCF_000001405.25"` in `submit_NCBI_BLAST()`, which is not an obvious name for a genome database.
+
+## Technical questions / Development / Feature request
+If you encounters issues or if a feature you would expect is not available in a NCBI.BLAST2DT function, please check if an existing issue adresses your point [here](https://github.com/YoannPa/NCBI.BLAST2DT/issues/). If not, create a [new issue here](https://github.com/YoannPa/NCBI.BLAST2DT/issues/new).  
 
 ## References
 ⚠️ **Work in progress !**  
