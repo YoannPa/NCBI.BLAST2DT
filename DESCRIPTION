@@ -16,4 +16,6 @@ Depends:
     hoardeR,
     data.table,
     xml2
+biocViews:
+    hoardeR
 RoxygenNote: 7.1.1
