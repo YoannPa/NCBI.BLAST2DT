@@ -5,14 +5,14 @@ _It makes use of the R package hoardeR to submit sequences to the NCBI BLAST API
 **Author: PAGEAUD Y.<sup>1</sup>**  
 **1-** [**DKFZ - Division of Applied Bioinformatics, Germany.**](https://www.dkfz.de/en/applied-bioinformatics/index.php)  
 
-**Version: 0.0.4 (Beta)**  
+**Version: 0.0.9 (Beta)**  
 **R Compatibility: Version 4.0.2**  
-**Last Update: 21/07/2021**  
+**Last Update: 16/08/2021**  
 **How to cite:** _Pageaud Y. et al., NCBI.BLAST2DT - Submit DNA sequences to NCBI BLAST and get results in an R data.table._  
 
 ## Content
 NCBI.BLAST2DT provides 2 types of functions:
-* `submit_NCBI_BLAST()` to submit DNA sequences to NCBI for BLASTing them against a sequence database.  
+* `submit_NCBI_BLAST()` and `get.NCBI.BLAST2DT()` to submit DNA sequences to NCBI for BLASTing them against a sequence database.  
 * `NCBI_BLAST_XML2DT()` and `aggregate_NCBI_BLAST_XMLs2DT()` to load, gather, and order all your BLAST results from NCBI submissions.  
 
 ## Prerequisites
@@ -67,4 +67,3 @@ If you encounters issues or if a feature you would expect is not available in a 
 
 ## Licence
 The repository BiocompR is currently under the GPL-3.0 licence.  
-

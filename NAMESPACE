@@ -2,4 +2,6 @@
 
 export(NCBI_BLAST_XML2DT)
 export(aggregate_NCBI_BLAST_XMLs2DT)
+export(get.NCBI.BLAST2DT)
+export(prepare.gb.access)
 export(submit_NCBI_BLAST)

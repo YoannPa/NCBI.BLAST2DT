@@ -36,9 +36,6 @@ genome assembly database:
 db = "genomic/9606/GCF_000001405.39").
 For more supported databases see Details.}
 }
-\value{
-A \code{type} object returned description.
-}
 \description{
 Submits a list of DNA sequences to NCBI BLAST for alignment to a sequence
 database.
@@ -77,7 +74,10 @@ submit_NCBI_BLAST(
   email = "myemailadress@dkfz.de", db = "genomic/9606/GCF_000001405.39")
 }
 \references{
-
+\itemize{
+ \item{\href{https://cran.r-project.org/web/packages/hoardeR/index.html}{hoardeR: Collect and Retrieve Annotation Data for Various Genomic Data Using Different Webservices.}}
+ \item{\href{https://academic.oup.com/nar/article/36/suppl_2/W5/2505810}{Johnson, M. et al. NCBI BLAST: a better web interface. Nucleic Acids Research 36, W5–W9 (2008).}}
+}
 }
 \author{
 Yoann Pageaud.
