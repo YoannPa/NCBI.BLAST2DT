@@ -187,4 +187,5 @@ get.NCBI.BLAST2DT <- function(
   if(auto.rm.dir){ unlink(x = res.dir) } else {
     message(paste("auto.rm.dir = FALSE: Raw results are stored in:", res.dir))
   }
+  return(dt.res)
 }

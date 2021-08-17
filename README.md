@@ -5,7 +5,7 @@ _It makes use of the R package hoardeR to submit sequences to the NCBI BLAST API
 **Author: PAGEAUD Y.<sup>1</sup>**  
 **1-** [**DKFZ - Division of Applied Bioinformatics, Germany.**](https://www.dkfz.de/en/applied-bioinformatics/index.php)  
 
-**Version: 0.0.13 (Beta)**  
+**Version: 0.0.15 (Beta)**  
 **R Compatibility: Version 4.0.2**  
 **Last Update: 17/08/2021**  
 **How to cite:** _Pageaud Y. et al., NCBI.BLAST2DT - Submit DNA sequences to NCBI BLAST and get results in an R data.table._  
