@@ -32,7 +32,9 @@ prepare.gb.access <- function(GBaccess.bed, ncores = 1){
   seq.list <- parallel::mclapply(
     X = seq_along(res), mc.cores = ncores, FUN = function(i){ substr(
       x = res[[i]], start = GBaccess.bed[i, 2], stop = GBaccess.bed[i, 3])})
-  names(seq.list) <- names(res)
+  #Create sequence names
+  names(seq.list) <- paste(names(res), paste(
+    GBaccess.bed[, 2], GBaccess.bed[, 3], sep = "-"), sep = ":")
   return(seq.list)
 }
 
@@ -149,8 +151,14 @@ submit_NCBI_BLAST <- function(
 #' @author Yoann Pageaud.
 #' @export 
 #' @examples
-#' #Create example 1 row data.frame
-#' df <- data.frame("GBaccessID" = "AC073318", "Start" = 71401, "End" = 120576)
+#' #Create 1 row data.frame for the example
+#' df <- data.frame("GBaccessID" = "AC073318", "Start" = 71401, "End" = 72401)
+#' #Submit the sequence extracted from AC073318 to NCBI BLAST API
+#' example.dt <- get.NCBI.BLAST2DT(
+#'   sequences = df, db = "genomic/9606/GCF_000001405.25",
+#'   res.dir = "~/result_BLAST", ncores = 2, auto.rm.dir = FALSE,
+#'   email = "myemailadress@dkfz.de")
+#' #example.dt is a data.table containing all BLAST hits for the sequence submitted.
 #' @references
 #' \itemize{
 #'  \item{\href{https://cran.r-project.org/web/packages/hoardeR/index.html}{hoardeR: Collect and Retrieve Annotation Data for Various Genomic Data Using Different Webservices.}}

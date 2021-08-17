@@ -5,15 +5,15 @@ _It makes use of the R package hoardeR to submit sequences to the NCBI BLAST API
 **Author: PAGEAUD Y.<sup>1</sup>**  
 **1-** [**DKFZ - Division of Applied Bioinformatics, Germany.**](https://www.dkfz.de/en/applied-bioinformatics/index.php)  
 
-**Version: 0.0.9 (Beta)**  
+**Version: 0.0.13 (Beta)**  
 **R Compatibility: Version 4.0.2**  
-**Last Update: 16/08/2021**  
+**Last Update: 17/08/2021**  
 **How to cite:** _Pageaud Y. et al., NCBI.BLAST2DT - Submit DNA sequences to NCBI BLAST and get results in an R data.table._  
 
 ## Content
 NCBI.BLAST2DT provides 2 types of functions:
-* `submit_NCBI_BLAST()` and `get.NCBI.BLAST2DT()` to submit DNA sequences to NCBI for BLASTing them against a sequence database.  
-* `NCBI_BLAST_XML2DT()` and `aggregate_NCBI_BLAST_XMLs2DT()` to load, gather, and order all your BLAST results from NCBI submissions.  
+* `submit_NCBI_BLAST()` and `get.NCBI.BLAST2DT()` to **submit** DNA sequences to NCBI for BLASTing them against a sequence database. Theses functions either take DNA sequences as **character strings**, or **Genbank accession IDs and coordinates of the sequences to extract** from them.
+* `NCBI_BLAST_XML2DT()` and `aggregate_NCBI_BLAST_XMLs2DT()` to **load, gather, and order** all your BLAST results from NCBI submissions.  
 
 ## Prerequisites
 ### Install Bioconductor dependencies

@@ -61,8 +61,14 @@ Automatically submits all sequences and retrieves all results in a
 data.table.
 }
 \examples{
-#Create example 1 row data.frame
-df <- data.frame("GBaccessID" = "AC073318", "Start" = 71401, "End" = 120576)
+#Create 1 row data.frame for the example
+df <- data.frame("GBaccessID" = "AC073318", "Start" = 71401, "End" = 72401)
+#Submit the sequence extracted from AC073318 to NCBI BLAST API
+example.dt <- get.NCBI.BLAST2DT(
+  sequences = df, db = "genomic/9606/GCF_000001405.25",
+  res.dir = "~/result_BLAST", ncores = 2, auto.rm.dir = FALSE,
+  email = "myemailadress@dkfz.de")
+#example.dt is a data.table containing all BLAST hits for the sequence submitted.
 }
 \references{
 \itemize{
