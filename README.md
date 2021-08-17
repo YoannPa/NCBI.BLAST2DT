@@ -56,7 +56,7 @@ Sometimes `submit_NCBI_BLAST()` can stop responding, or crash, while expecting a
 5. Execute again the same command using the function `submit_NCBI_BLAST()`: The sequence for which results have already been generated will be automatically skipped, and submission will restart by the last failed submission.
 
 **⚠ In min(which(seqInfo$seqRID == 0)) : no non-missing arguments to min; returning Inf**
-This warning can arise when NCBI BLAST terminates the request in process. There are different reasons why NCBI BLAST server can terminate your request. To find which reason is invocked you can go to the web interface [**here**](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=GetSaved&RECENT_RESULTS=on) and past the run ID from your logs into the field **"Request ID"**. Here an error message might be displayed, explaining the reason why your request has been terminated (e.g. _CPU usage limit was exceeded. You may need to change your search strategy.[...]_) 
+This warning can arise from `submit_NCBI_BLAST()` and `get.NCBI.BLAST2DT()` when NCBI BLAST terminates the request in process. There are different reasons why NCBI BLAST server can terminate your request. To find which reason is invocked you can go to the web interface [**here**](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=GetSaved&RECENT_RESULTS=on) and past the run ID from your logs into the field **"Request ID"**. Here an error message might be displayed, explaining the reason why your request has been terminated (e.g. _CPU usage limit was exceeded. You may need to change your search strategy.[...]_) 
 
 **⚠️ Not getting any hits from the XMLs of submitted sequences when I expect some**  
 NCBI database names are not well defined anywhere: it can be tricky to find the right one.
@@ -66,7 +66,11 @@ For example, to BLAST sequences against the human genome assembly hg19 version, 
 If you encounters issues or if a feature you would expect is not available in a NCBI.BLAST2DT function, please check if an existing issue adresses your point [here](https://github.com/YoannPa/NCBI.BLAST2DT/issues/). If not, create a [new issue here](https://github.com/YoannPa/NCBI.BLAST2DT/issues/new).  
 
 ## References
-⚠️ **Work in progress !**  
+
+1. [_hoardeR: Collect and Retrieve Annotation Data for Various Genomic Data Using Different Webservices._](https://cran.r-project.org/web/packages/hoardeR/index.html)
+2. [_Johnson, M. et al. NCBI BLAST: a better web interface. **Nucleic Acids Research 36, W5–W9** (2008)._](https://academic.oup.com/nar/article/36/suppl_2/W5/2505810)
+3. [_Paradis E. & Schliep K. 2019. ape 5.0: an environment for modern phylogenetics and evolutionary analyses in R. **Bioinformatics 35: 526–528.** doi:10.1093/bioinformatics/bty633. HAL: ird-01920132._](https://academic.oup.com/bioinformatics/article/35/3/526/5055127)
+4. [_xml2: Parse XML._](https://cran.r-project.org/web/packages/xml2/index.html)
 
 ## Licence
-The repository BiocompR is currently under the GPL-3.0 licence.  
+The repository NCBI.BLAST2DT is currently under the GPL-3.0 licence.  
