@@ -30,7 +30,7 @@ Prepares a set of GenBank Accession IDs for NCBI BLAST submission
 df <- data.frame("GBaccessID" = "AC073318", "Start" = 71401, "End" = 120576)
 #Prepare sequence for submission to NCBI BLAST
 seq.list <- prepare.gb.access(GBaccess.bed = df)
-# se.list can now be used by submit_NCBI_BLAST
+# seq.list can now be used by submit_NCBI_BLAST
 }
 \references{
 \href{https://academic.oup.com/bioinformatics/article/35/3/526/5055127}{Paradis E. & Schliep K. 2019. ape 5.0: an environment for modern phylogenetics and evolutionary analyses in R. Bioinformatics 35: 526–528. doi:10.1093/bioinformatics/bty633. HAL: ird-01920132.}

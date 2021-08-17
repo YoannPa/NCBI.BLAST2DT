@@ -19,5 +19,6 @@ Depends:
 biocViews:
     hoardeR
 Imports:
-    ape
+    ape,
+    parallel
 RoxygenNote: 7.1.1

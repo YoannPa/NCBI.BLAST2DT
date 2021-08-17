@@ -55,6 +55,9 @@ Sometimes `submit_NCBI_BLAST()` can stop responding, or crash, while expecting a
 4. Restart R.
 5. Execute again the same command using the function `submit_NCBI_BLAST()`: The sequence for which results have already been generated will be automatically skipped, and submission will restart by the last failed submission.
 
+**⚠ In min(which(seqInfo$seqRID == 0)) : no non-missing arguments to min; returning Inf**
+This warning can arise when NCBI BLAST terminates the request in process. There are different reasons why NCBI BLAST server can terminate your request. To find which reason is invocked you can go to the web interface [**here**](https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=GetSaved&RECENT_RESULTS=on) and past the run ID from your logs into the field **"Request ID"**. Here an error message might be displayed, explaining the reason why your request has been terminated (e.g. _CPU usage limit was exceeded. You may need to change your search strategy.[...]_) 
+
 **⚠️ Not getting any hits from the XMLs of submitted sequences when I expect some**  
 NCBI database names are not well defined anywhere: it can be tricky to find the right one.
 For example, to BLAST sequences against the human genome assembly hg19 version, one must specify `db = "genomic/9606/GCF_000001405.25"` in `submit_NCBI_BLAST()`, which is not an obvious name for a genome database.
