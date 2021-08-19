@@ -1,14 +1,20 @@
 # NCBI.BLAST2DT - Submit DNA sequences to NCBI BLAST and get results in an R data.table. <img src="img/NCBI.BLAST2DT_hexsticker.png" align="right" height="140" />
+
+![GitHub repo size](https://img.shields.io/github/repo-size/YoannPa/NCBI.BLAST2DT)
+![GitHub issues](https://img.shields.io/github/issues-raw/YoannPa/NCBI.BLAST2DT)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/YoannPa/NCBI.BLAST2DT)  
+
 _**NCBI.BLAST2DT** is an R package allowing you to submit DNA sequences to NCBI BLAST servers directly from the console, to retrieve potential hits on a genome or sequence database, and to collect all results within an R data.table._  
 _It makes use of the R package hoardeR to submit sequences to the NCBI BLAST API, and then parses the XML BLAST results returned to load them as an R data.table to make it more easy to query, sort, order and subset the resulting hits._  
 
 **Author: PAGEAUD Y.<sup>1</sup>**  
 **1-** [**DKFZ - Division of Applied Bioinformatics, Germany.**](https://www.dkfz.de/en/applied-bioinformatics/index.php)  
 
-**Version: 0.0.15 (Beta)**  
-**R Compatibility: Version 4.0.2**  
-**Last Update: 17/08/2021**  
 **How to cite:** _Pageaud Y. et al., NCBI.BLAST2DT - Submit DNA sequences to NCBI BLAST and get results in an R data.table._  
+![GitHub R package version](https://img.shields.io/github/r-package/v/YoannPa/NCBI.BLAST2DT?label=Package%20version&logo=RStudio&logoColor=white&style=for-the-badge)  
+<img src="https://img.shields.io/static/v1?label=compatibility&message=4.0.5&color=blue&logo=R&logoColor=white&style=for-the-badge" />  
+![GitHub last commit](https://img.shields.io/github/last-commit/YoannPa/NCBI.BLAST2DT?logo=git&style=for-the-badge)  
+![GitHub](https://img.shields.io/github/license/YoannPa/NCBI.BLAST2DT?color=brightgreen&style=for-the-badge)  
 
 ## Content
 NCBI.BLAST2DT provides 2 types of functions:
