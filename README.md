@@ -78,5 +78,3 @@ If you encounters issues or if a feature you would expect is not available in a 
 3. [_Paradis E. & Schliep K. 2019. ape 5.0: an environment for modern phylogenetics and evolutionary analyses in R. **Bioinformatics 35: 526–528.** doi:10.1093/bioinformatics/bty633. HAL: ird-01920132._](https://academic.oup.com/bioinformatics/article/35/3/526/5055127)
 4. [_xml2: Parse XML._](https://cran.r-project.org/web/packages/xml2/index.html)
 
-## Licence
-The repository NCBI.BLAST2DT is currently under the GPL-3.0 licence.  
