@@ -7,8 +7,8 @@
 prepare.gb.access(GBaccess.bed, ncores = 1)
 }
 \arguments{
-\item{GBaccess.bed}{A \code{data.frame} in a BED-like format containing
-columns as following:
+\item{GBaccess.bed}{A \code{data.table} or a \code{data.frame} in a BED-like
+format containing columns as following:
 \itemize{
  \item{column 1: The Genbank accession IDs}
  \item{column 2: The start position of the sequence to

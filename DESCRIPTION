@@ -1,7 +1,7 @@
 Package: NCBI.BLAST2DT
 Type: Package
 Title: Submit DNA sequences to NCBI BLAST and get results in an R data.table.
-Version: 0.0.15
+Version: 0.0.16
 Authors@R: 
     person(given = "Yoann",
            family = "Pageaud",

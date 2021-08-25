@@ -1,8 +1,8 @@
 
 #' Prepares a set of GenBank Accession IDs for NCBI BLAST submission
 #' 
-#' @param GBaccess.bed A \code{data.frame} in a BED-like format containing
-#'                     columns as following:
+#' @param GBaccess.bed A \code{data.table} or a \code{data.frame} in a BED-like
+#'                     format containing columns as following:
 #'                     \itemize{
 #'                      \item{column 1: The Genbank accession IDs}
 #'                      \item{column 2: The start position of the sequence to
@@ -25,7 +25,11 @@
 
 prepare.gb.access <- function(GBaccess.bed, ncores = 1){
   #Get Genbank accession IDs
-  res <- ape::read.GenBank(access.nb = GBaccess.bed[,1], as.character = TRUE)
+  if(data.table::is.data.table(GBaccess.bed)){
+    res <- ape::read.GenBank(access.nb = GBaccess.bed[[1]], as.character = TRUE)
+  } else if(is.data.frame(GBaccess.bed)){
+    res <- ape::read.GenBank(access.nb = GBaccess.bed[,1], as.character = TRUE)
+  }
   res <- parallel::mclapply(
     X = res, mc.cores = ncores, FUN = paste, collapse = "")
   #Extract positions in sequences
@@ -33,8 +37,13 @@ prepare.gb.access <- function(GBaccess.bed, ncores = 1){
     X = seq_along(res), mc.cores = ncores, FUN = function(i){ substr(
       x = res[[i]], start = GBaccess.bed[i, 2], stop = GBaccess.bed[i, 3])})
   #Create sequence names
-  names(seq.list) <- paste(names(res), paste(
-    GBaccess.bed[, 2], GBaccess.bed[, 3], sep = "-"), sep = ":")
+  if(data.table::is.data.table(GBaccess.bed)){
+    names(seq.list) <- paste(names(res), paste(
+      GBaccess.bed[[2]], GBaccess.bed[[3]], sep = "-"), sep = ":")
+  } else if(is.data.frame(GBaccess.bed)){
+    names(seq.list) <- paste(names(res), paste(
+      GBaccess.bed[, 2], GBaccess.bed[, 3], sep = "-"), sep = ":")
+  }
   return(seq.list)
 }
 
@@ -182,7 +191,7 @@ get.NCBI.BLAST2DT <- function(
     seq.list = sequences, res.dir = res.dir, delay.req = delay.req, email, db)
   #Get XML results into a data.table
   dt.res <- NCBI.BLAST2DT::aggregate_NCBI_BLAST_XMLs2DT(
-    dir.to.xmls = res.dir, ncores = ncores)
+    dir.to.xmls = res.dir, seq.names = names(sequences), ncores = ncores)
   #Remove result directory if requested
   if(auto.rm.dir){ unlink(x = res.dir) } else {
     message(paste("auto.rm.dir = FALSE: Raw results are stored in:", res.dir))

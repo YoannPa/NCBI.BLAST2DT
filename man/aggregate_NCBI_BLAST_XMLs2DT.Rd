@@ -4,13 +4,19 @@
 \alias{aggregate_NCBI_BLAST_XMLs2DT}
 \title{Aggregates NCBI BLAST results from multiple XML files into an R data.table.}
 \usage{
-aggregate_NCBI_BLAST_XMLs2DT(dir.to.xmls, ncores = 1)
+aggregate_NCBI_BLAST_XMLs2DT(dir.to.xmls, seq.names = NULL, ncores = 1)
 }
 \arguments{
 \item{dir.to.xmls}{A \code{character} specifying a directory to be searched
 recursively for NCBI BLAST XML results (For more
 information about XML results from NCBI BLAST see
 \link{NCBI_BLAST_XML2DT}).}
+
+\item{seq.names}{A \code{character} vector to specify sequence names from
+which you wish to load BLAST results in the R data.table.
+Useful if your result folder contains results from other
+BLAST submissions. If NULL, all results in 'dir.to.xmls'
+will be loaded into the data.table.}
 
 \item{ncores}{An \code{integer} specifying the number of cores or
 threads to be used for parallel processing.}

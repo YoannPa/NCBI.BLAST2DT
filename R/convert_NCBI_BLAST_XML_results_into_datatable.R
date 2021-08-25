@@ -91,6 +91,11 @@ NCBI_BLAST_XML2DT <- function(xml_file){
 #'                    recursively for NCBI BLAST XML results (For more
 #'                    information about XML results from NCBI BLAST see
 #'                    \link{NCBI_BLAST_XML2DT}).
+#' @param seq.names   A \code{character} vector to specify sequence names from
+#'                    which you wish to load BLAST results in the R data.table.
+#'                    Useful if your result folder contains results from other
+#'                    BLAST submissions. If NULL, all results in 'dir.to.xmls'
+#'                    will be loaded into the data.table.
 #' @param ncores      An \code{integer} specifying the number of cores or
 #'                    threads to be used for parallel processing.
 #' @return A \code{data.table} aggregating all NCBI BLAST results from all XML
@@ -108,10 +113,14 @@ NCBI_BLAST_XML2DT <- function(xml_file){
 #'  \item{\href{https://cran.r-project.org/web/packages/xml2/index.html}{xml2: Parse XML.}}
 #' }
 
-aggregate_NCBI_BLAST_XMLs2DT <- function(dir.to.xmls, ncores = 1){
+aggregate_NCBI_BLAST_XMLs2DT <- function(dir.to.xmls, seq.names = NULL, ncores = 1){
   #List all XML files in a directory
   ls.xmls <- list.files(path = dir.to.xmls, include.dirs = FALSE,
                         recursive = TRUE, pattern = ".xml")
+  if(!is.null(seq.names)){
+    file.names <- paste0(seq.names, "/1.xml")
+    ls.xmls[ls.xmls %in% file.names]
+  }
   ls.path <- file.path(dir.to.xmls, ls.xmls)
   names(ls.path) <- ls.xmls
   #Convert all XMLs found into data.tables in parallel
