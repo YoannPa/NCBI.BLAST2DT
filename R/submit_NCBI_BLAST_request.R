@@ -117,7 +117,7 @@ split_queries.df <- function(df, by = 7000){
 
 split_queries <- function(x = x, by = 7000, ncores = 1){
   if(is.data.frame(x)){
-    dt.res <- split.queries.df(df = x, by = by)
+    dt.res <- split_queries.df(df = x, by = by)
     #Convert to list of sequences
     ls.seq <- prepare.gb.access(GBaccess.bed = dt.res, ncores = ncores)
   } else if(is.list(x)){
