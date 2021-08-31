@@ -38,8 +38,8 @@ result is stored in a separate folder within the given
 directory. Blast hits for each submission are available as
 a XML file in each matching folder.}
 
-\item{ncores}{An \code{integer} to specify the number of cores/threads
-to be used to parallel-compute probes intensities.}
+\item{ncores}{An \code{integer} specifying the number of cores or
+threads to be used for parallel processing.}
 
 \item{auto.rm.dir}{A \code{logical} specifying whether the results directory
 should be immediately deleted after function execution end

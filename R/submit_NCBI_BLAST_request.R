@@ -9,8 +9,8 @@
 #'                      keep}
 #'                      \item{column 3: The end position of sequence to keep}
 #'                     }
-#' @param ncores       An \code{integer} to specify the number of cores/threads
-#'                     to be used to parallel-compute probes intensities.
+#' @param ncores       An \code{integer} specifying the number of cores or
+#'                     threads to be used for parallel processing.
 #' @return A \code{list} of sequences based on information provided in GBaccess.
 #' @author Yoann Pageaud.
 #' @export
@@ -46,6 +46,106 @@ prepare.gb.access <- function(GBaccess.bed, ncores = 1){
   }
   return(seq.list)
 }
+
+#' Splits a data.frame of Genbank IDs and intervals into a data.table of smaller
+#' intervals.
+#' 
+#' @param df A \code{data.frame} or a \code{data.table} in a BED-like format
+#'           following the same specifications as 'GBaccess.bed' in
+#'           \link{prepare.gb.access}.
+#' @param by An \code{integer} to specify the length of the output DNA sequences
+#'           you wish your queries to be splitted into, in base pair
+#'           (Default: by = 7000).
+#' @return A \code{data.table} of the Genbank IDs with intervals of the
+#'         specified length. You can then subset the intervals of interest
+#'         before submitting the data.table to \link{prepare.gb.access} or
+#'         \link{get.NCBI.BLAST2DT}.
+#' @author Yoann Pageaud.
+#' @export
+#' @examples
+#' #Using an example data.frame of 1 Genbank ID
+#' split.queries.df(
+#'   df = data.frame("GB.access" = "AC073318", "Start" = 71401, "End" = 120576),
+#'   by = 7025)
+
+split.queries.df <- function(df, by = 7000){
+  ls.dt <- lapply(X = seq(nrow(df)), FUN = function(i){
+    #Compute breaks
+    brks <- seq(from = df[i, 2], to = df[i, 3], by = by)
+    brks <- brks[2:(length(brks)-1)]
+    #Create intervals based on breaks
+    dt <- data.table::data.table(
+      c(df[i, 2]:df[i, 3]), findInterval(c(df[i, 2]:df[i, 3]), brks))
+    #Create data.table of coordinates based on the intervals created
+    do.call(rbind, by.default(dt, dt$V2, function(g){ data.table::data.table(
+      GB.access = df[i, 1], Start = min(g$V1), End = max(g$V1))}))
+  })
+  #Rbind all data.frames into a data.table
+  dt.res <- data.table::rbindlist(l = ls.dt)
+  return(dt.res)
+}
+
+
+#' Splits a set of BLAST queries into a list of smaller DNA sequences.
+#' 
+#' @param x      Supports 2 possible formats:
+#'               \itemize{
+#'                \item{A \code{data.frame} in a BED-like format following the
+#'                same specifications as 'GBaccess.bed' in
+#'                \link{prepare.gb.access}.}
+#'                \item{A \code{list} of DNA sequences.}
+#'               }
+#' @param by     An \code{integer} to specify the length of the output DNA
+#'               sequences you wish your queries to be splitted into, in base
+#'               pair (Default: by = 7000).
+#' @param ncores An \code{integer} specifying the number of cores or threads to
+#'               be used for parallel processing.
+#' @return A \code{list} of DNA sequences of the requested length.
+#' @author Yoann Pageaud.
+#' @export
+#' @examples
+#' #Using an example data.frame of 1 Genbank ID
+#' ls.seq <- split.queries(
+#'   x = data.frame("GB.access" = "AC073318", "Start" = 71401, "End" = 120576),
+#'   by = 7025)
+#' #Using an example list of DNA sequences
+#' ls.seq <- list(
+#'   "7qtel" = "CCCTAACACTGTTAGGGTTATTATGTTGACTGTTCTCATTGCTGTCTTAG",
+#'   "1ptel" = "GATCCTTGAAGCGCCCCCAAGGGCATCTTCTCAAAGTTGGATGTGTGCAT",
+#'   "17qtel" = "CCCTAACCCTAAACCCTAGCCCTAGCCCTAGCCCTAGCCCTAGCCCTAGC")
+#' ls.seq <- split.queries(x = ls.seq, by = 10)
+
+split.queries <- function(x = x, by = 7000, ncores = 1){
+  if(is.data.frame(x)){
+    dt.res <- split.queries.df(df = x, by = by)
+    #Convert to list of sequences
+    ls.seq <- prepare.gb.access(GBaccess.bed = dt.res, ncores = ncores)
+  } else if(is.list(x)){
+    ls.seq <- lapply(X = x, FUN = function(i){
+      brks <- seq(from = 1, to = nchar(i), by = by)
+      brks <- brks[2:(length(brks)-1)]
+      brks
+      dt <- data.table::data.table(
+        c(1:nchar(i)), findInterval(c(1:nchar(i)), brks))
+      by.seq <- by.default(dt, dt$V2, function(g){ 
+        substr(x = i, start = min(g$V1), stop = max(g$V1))
+      })
+      by.names <- by.default(dt, dt$V2, function(g){ 
+        paste(min(g$V1), max(g$V1), sep = "-")
+      })
+      sub.ls <- as.list(by.seq)
+      names(sub.ls) <- c(by.names)
+      sub.ls
+    })
+    #Flatten output list
+    ls.seq <- lapply(X = unlist(ls.seq), FUN = function(i){ i })
+    #Create new names
+    names(ls.seq) <- gsub(pattern = "\\.(\\d+\\-\\d+$)", replacement = ":\\1",
+                          x = names(ls.seq))
+  }
+  return(ls.seq)
+}
+
 
 #' Submits a list of DNA sequences to NCBI BLAST for alignment to a sequence
 #' database.
@@ -145,8 +245,8 @@ submit_NCBI_BLAST <- function(
 #'                    result is stored in a separate folder within the given
 #'                    directory. Blast hits for each submission are available as
 #'                    a XML file in each matching folder.
-#' @param ncores      An \code{integer} to specify the number of cores/threads
-#'                    to be used to parallel-compute probes intensities.
+#' @param ncores      An \code{integer} specifying the number of cores or
+#'                    threads to be used for parallel processing.
 #' @param auto.rm.dir A \code{logical} specifying whether the results directory
 #'                    should be immediately deleted after function execution end
 #'                    (auto.rm.dir = TRUE) or not (auto.rm.dir = FALSE). If

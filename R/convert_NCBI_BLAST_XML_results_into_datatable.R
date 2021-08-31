@@ -117,9 +117,9 @@ aggregate_NCBI_BLAST_XMLs2DT <- function(dir.to.xmls, seq.names = NULL, ncores =
   #List all XML files in a directory
   ls.xmls <- list.files(path = dir.to.xmls, include.dirs = FALSE,
                         recursive = TRUE, pattern = ".xml")
-  if(!is.null(seq.names)){
+  if(!is.null(seq.names)){ #load only results for given sequence names 
     file.names <- paste0(seq.names, "/1.xml")
-    ls.xmls[ls.xmls %in% file.names]
+    ls.xmls <- ls.xmls[ls.xmls %in% file.names]
   }
   ls.path <- file.path(dir.to.xmls, ls.xmls)
   names(ls.path) <- ls.xmls

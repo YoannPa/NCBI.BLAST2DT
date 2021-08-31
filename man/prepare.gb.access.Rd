@@ -16,8 +16,8 @@ format containing columns as following:
  \item{column 3: The end position of sequence to keep}
 }}
 
-\item{ncores}{An \code{integer} to specify the number of cores/threads
-to be used to parallel-compute probes intensities.}
+\item{ncores}{An \code{integer} specifying the number of cores or
+threads to be used for parallel processing.}
 }
 \value{
 A \code{list} of sequences based on information provided in GBaccess.
