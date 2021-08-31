@@ -64,11 +64,11 @@ prepare.gb.access <- function(GBaccess.bed, ncores = 1){
 #' @export
 #' @examples
 #' #Using an example data.frame of 1 Genbank ID
-#' split.queries.df(
+#' split_queries.df(
 #'   df = data.frame("GB.access" = "AC073318", "Start" = 71401, "End" = 120576),
 #'   by = 7025)
 
-split.queries.df <- function(df, by = 7000){
+split_queries.df <- function(df, by = 7000){
   ls.dt <- lapply(X = seq(nrow(df)), FUN = function(i){
     #Compute breaks
     brks <- seq(from = df[i, 2], to = df[i, 3], by = by)
@@ -105,7 +105,7 @@ split.queries.df <- function(df, by = 7000){
 #' @export
 #' @examples
 #' #Using an example data.frame of 1 Genbank ID
-#' ls.seq <- split.queries(
+#' ls.seq <- split_queries(
 #'   x = data.frame("GB.access" = "AC073318", "Start" = 71401, "End" = 120576),
 #'   by = 7025)
 #' #Using an example list of DNA sequences
@@ -113,9 +113,9 @@ split.queries.df <- function(df, by = 7000){
 #'   "7qtel" = "CCCTAACACTGTTAGGGTTATTATGTTGACTGTTCTCATTGCTGTCTTAG",
 #'   "1ptel" = "GATCCTTGAAGCGCCCCCAAGGGCATCTTCTCAAAGTTGGATGTGTGCAT",
 #'   "17qtel" = "CCCTAACCCTAAACCCTAGCCCTAGCCCTAGCCCTAGCCCTAGCCCTAGC")
-#' ls.seq <- split.queries(x = ls.seq, by = 10)
+#' ls.seq <- split_queries(x = ls.seq, by = 10)
 
-split.queries <- function(x = x, by = 7000, ncores = 1){
+split_queries <- function(x = x, by = 7000, ncores = 1){
   if(is.data.frame(x)){
     dt.res <- split.queries.df(df = x, by = by)
     #Convert to list of sequences
