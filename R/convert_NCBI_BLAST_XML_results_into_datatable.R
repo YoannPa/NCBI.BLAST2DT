@@ -23,18 +23,74 @@
 NCBI_BLAST_XML2DT <- function(xml_file){
   #Load NCBI BLAST XML results
   blast_xml <- xml2::read_xml(xml_file)
+  #Get BLAST query data
+  query_dt <- data.table::data.table(
+    "query_id" = xml2::xml_text(
+      xml2::xml_find_all(x = blast_xml, xpath = "//Iteration_query-ID")),
+    "query-def" = xml2::xml_text(
+      xml2::xml_find_all(x = blast_xml, xpath = "//Iteration_query-def")),
+    "query-len" = as.integer(
+      xml2::xml_text(xml2::xml_find_all(
+        x = blast_xml, xpath = "//Iteration_query-len"))))
+  #Get all hits and map them to all queries
+  iter_hits <- xml2::xml_find_all(x = blast_xml, xpath = "//Iteration_hits")
+  ls_query_hits <- lapply(X = seq_along(iter_hits), FUN = function(i){
+    if(xml2::xml_text(xml2::read_xml(as.character(iter_hits[[i]]))) == "\n"){
+      data.table::data.table("query_id" = query_dt[i]$query_id, "hits_num" = NA)
+    } else {
+      data.table::data.table(
+        "query_id" = query_dt[i]$query_id,
+        "hits_num" = as.integer(xml2::xml_text(xml2::xml_find_all(
+          xml2::read_xml(as.character(iter_hits[[i]])), xpath = "//Hit_num"))))
+    }
+  })
+  dt_query_hits <- data.table::rbindlist(l = ls_query_hits)
+  rm(ls_query_hits)
+  #Merge query_dt & dt_query_hits
+  query_dt <- data.table::merge.data.table(
+    x = query_dt, y = dt_query_hits, by = "query_id")
+  
   #Get BLAST hits data
-  hits_dt <- data.table::data.table(
-    "hits_num" = as.integer(
-      xml2::xml_text(xml2::xml_find_all(x = blast_xml, xpath = "//Hit_num"))),
-    "hits_id" = xml2::xml_text(
-      xml2::xml_find_all(x = blast_xml, xpath = "//Hit_id")),
-    "hits_def" = xml2::xml_text(
-      xml2::xml_find_all(x = blast_xml, xpath = "//Hit_def")),
-    "hits_accession" = xml2::xml_text(
-      xml2::xml_find_all(x = blast_xml, xpath = "//Hit_accession")),
-    "hits_len" = as.integer(
-      xml2::xml_text(xml2::xml_find_all(x = blast_xml, xpath = "//Hit_len"))))
+  ls_hits <- lapply(X = seq_along(iter_hits), FUN = function(i){
+    iter_hits_xml <- xml2::read_xml(as.character(iter_hits[[i]]))
+    if(xml2::xml_text(iter_hits_xml) == "\n"){
+      data.table::data.table(
+        "query_id" = query_dt[i]$query_id, "hits_num" = NA, "hits_id" = NA,
+        "hits_def" = NA, "hits_accession" = NA, "hits_len" = NA)
+    } else {
+      data.table::data.table(
+        "query_id" = query_dt[i]$query_id,
+        "hits_num" = as.integer(xml2::xml_text(xml2::xml_find_all(
+          x = xml2::read_xml(as.character(iter_hits[[i]])),
+          xpath = "//Hit_num"))),
+        "hits_id" = xml2::xml_text(xml2::xml_find_all(
+          x = xml2::read_xml(as.character(iter_hits[[i]])),
+          xpath = "//Hit_id")),
+        "hits_def" = xml2::xml_text(xml2::xml_find_all(
+          x = xml2::read_xml(as.character(iter_hits[[i]])),
+          xpath = "//Hit_def")),
+        "hits_accession" = xml2::xml_text(xml2::xml_find_all(
+          x = xml2::read_xml(as.character(iter_hits[[i]])),
+          xpath = "//Hit_accession")),
+        "hits_len" = as.integer(xml2::xml_text(xml2::xml_find_all(
+          x = xml2::read_xml(as.character(iter_hits[[i]])),
+          xpath = "//Hit_len"))))
+    }
+  })
+  hits_dt <- data.table::rbindlist(l = ls_hits)
+  rm(ls_hits)
+  # hits_dt <- data.table::data.table(
+  #   "hits_num" = as.integer(
+  #     xml2::xml_text(xml2::xml_find_all(x = blast_xml, xpath = "//Hit_num"))),
+  #   "hits_id" = xml2::xml_text(
+  #     xml2::xml_find_all(x = blast_xml, xpath = "//Hit_id")),
+  #   "hits_def" = xml2::xml_text(
+  #     xml2::xml_find_all(x = blast_xml, xpath = "//Hit_def")),
+  #   "hits_accession" = xml2::xml_text(
+  #     xml2::xml_find_all(x = blast_xml, xpath = "//Hit_accession")),
+  #   "hits_len" = as.integer(
+  #     xml2::xml_text(xml2::xml_find_all(x = blast_xml, xpath = "//Hit_len"))))
+  
   #Get BLAST hit samples data
   hsps_dt <- data.table::data.table(
     "subject_num" = as.integer(
@@ -78,9 +134,28 @@ NCBI_BLAST_XML2DT <- function(xml_file){
     hsps_dt[, hits_num := cumsum(c(1, diff(as.integer(xml2::xml_text(
       xml2::xml_find_all(x = blast_xml, xpath = "//Hsp_num")))) != 1))]
   }
+  #Merge hits and hsps
+  dt_hits_hsps <- data.table::merge.data.table(x = hits_dt, y = hsps_dt,
+                                               by = "hits_num", all.x = TRUE)
+  #Create new query_hits key in query_dt & hits_dt
+  query_dt[, query_hits := paste(query_id, hits_num, sep = "-")]
+  dt_hits_hsps[, query_hits := paste(query_id, hits_num, sep = "-")]
+  #Merge query_dt & hits_dt
+  dt_query_hits_hsps <- data.table::merge.data.table(
+    x = query_dt, y = dt_hits_hsps, by = "query_hits")
   #Create full BLAST data.table
-  BLAST.dt <- data.table::merge.data.table(x = hits_dt, y = hsps_dt,
-                                           by = "hits_num", all.y = TRUE)
+  data.table::setnames(
+    x = dt_query_hits_hsps, old = "query_id.x", new = "query_id")
+  data.table::setnames(
+    x = dt_query_hits_hsps, old = "hits_num.x", new = "hits_num")
+  BLAST.dt <- dt_query_hits_hsps[, -c("query_id.y", "hits_num.y"), ]
+  # BLAST.dt <- data.table::merge.data.table(x = hits_dt, y = hsps_dt,
+  #                                          by = "hits_num", all.y = TRUE)
+  
+  # rm intermediate tables
+  rm(
+    dt_hits_hsps, dt_query_hits, dt_query_hits_hsps, hits_dt, hsps_dt,
+    iter_hits, query_dt)
   #Return result
   return(BLAST.dt)
 }
