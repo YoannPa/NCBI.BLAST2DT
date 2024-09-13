@@ -36,19 +36,11 @@ inst.pkgs = c('data.table', 'devtools', 'parallel', 'xml2')
 install.packages(inst.pkgs)
 ```
 
-## Installing
-1. In the Git repository click on "Clone or Download".
-2. Copy the HTTPS link.
-3. Open a terminal and type:
-```bash
-git clone https://github.com/YoannPa/NCBI.BLAST2DT.git
-```
-4. Open the folder NCBI.BLAST2DT and open the "NCBI.BLAST2DT.Rproj" file in RStudio.
-5. In the RStudio console, type:
+## Installing NCBI.BLAST2DT
+In R execute the following command:
 ```R
-devtools::install()
+devtools::install_github("YoannPa/NCBI.BLAST2DT")
 ```
-
 ## Problems ? / I need help !
 For any questions **Not related to bugs or development** please check the section "**Known Issues**" available below. If the issue you experience is not adressed in the known issues you can write me at [y.pageaud@dkfz.de](y.pageaud@dkfz.de).
 
