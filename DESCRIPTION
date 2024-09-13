@@ -24,4 +24,4 @@ biocViews:
 Imports:
     ape,
     parallel
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.2

@@ -21,9 +21,9 @@
 #' }
 
 NCBI_BLAST_XML2DT <- function(xml_file){
-  #Load NCBI BLAST XML results
+  # Load NCBI BLAST XML results
   blast_xml <- xml2::read_xml(xml_file)
-  #Get BLAST query data
+  # Get BLAST query data
   query_dt <- data.table::data.table(
     "query_id" = xml2::xml_text(
       xml2::xml_find_all(x = blast_xml, xpath = "//Iteration_query-ID")),
@@ -46,20 +46,23 @@ NCBI_BLAST_XML2DT <- function(xml_file){
   })
   dt_query_hits <- data.table::rbindlist(l = ls_query_hits)
   rm(ls_query_hits)
-  #Merge query_dt & dt_query_hits
+  # Merge query_dt & dt_query_hits
   query_dt <- data.table::merge.data.table(
     x = query_dt, y = dt_query_hits, by = "query_id")
+  
+  # Get vector of unique query IDs
+  unique_query_id <- unique(query_dt$query_id)
   
   #Get BLAST hits data
   ls_hits <- lapply(X = seq_along(iter_hits), FUN = function(i){
     iter_hits_xml <- xml2::read_xml(as.character(iter_hits[[i]]))
     if(xml2::xml_text(iter_hits_xml) == "\n"){
       data.table::data.table(
-        "query_id" = query_dt[i]$query_id, "hits_num" = NA, "hits_id" = NA,
+        "query_id" = unique_query_id[i], "hits_num" = NA, "hits_id" = NA,
         "hits_def" = NA, "hits_accession" = NA, "hits_len" = NA)
     } else {
       data.table::data.table(
-        "query_id" = query_dt[i]$query_id,
+        "query_id" = unique_query_id[i],
         "hits_num" = as.integer(xml2::xml_text(xml2::xml_find_all(
           x = xml2::read_xml(as.character(iter_hits[[i]])),
           xpath = "//Hit_num"))),
@@ -78,20 +81,11 @@ NCBI_BLAST_XML2DT <- function(xml_file){
     }
   })
   hits_dt <- data.table::rbindlist(l = ls_hits)
-  rm(ls_hits)
-  # hits_dt <- data.table::data.table(
-  #   "hits_num" = as.integer(
-  #     xml2::xml_text(xml2::xml_find_all(x = blast_xml, xpath = "//Hit_num"))),
-  #   "hits_id" = xml2::xml_text(
-  #     xml2::xml_find_all(x = blast_xml, xpath = "//Hit_id")),
-  #   "hits_def" = xml2::xml_text(
-  #     xml2::xml_find_all(x = blast_xml, xpath = "//Hit_def")),
-  #   "hits_accession" = xml2::xml_text(
-  #     xml2::xml_find_all(x = blast_xml, xpath = "//Hit_accession")),
-  #   "hits_len" = as.integer(
-  #     xml2::xml_text(xml2::xml_find_all(x = blast_xml, xpath = "//Hit_len"))))
+  # Create unique key index
+  hits_dt[, query_hits := paste(query_id, hits_num, sep = "-")]
   
-  #Get BLAST hit samples data
+  rm(ls_hits)
+  # Get BLAST hit samples data
   hsps_dt <- data.table::data.table(
     "subject_num" = as.integer(
       xml2::xml_text(xml2::xml_find_all(x = blast_xml, xpath = "//Hsp_num"))),
@@ -128,15 +122,30 @@ NCBI_BLAST_XML2DT <- function(xml_file){
     "midline_alignments" = xml2::xml_text(
       xml2::xml_find_all(x = blast_xml, xpath = "//Hsp_midline")))
   
-  #Add empty 'hits_num' column when no alignment found in the XML file
-  if(nrow(hsps_dt) == 0){ hsps_dt[, hits_num := integer()] } else {
-    #Add 'hits_num'
+  # Custom add of 'hits_num' column (temporary fix)
+  if(nrow(hsps_dt) == 0){
+    # There no hit
+    hsps_dt[, hits_num := integer()]
+  } else if(unique(hsps_dt$subject_num) == 1){
+    # There is only 1 sample per hit
+    hsps_dt <- cbind(
+      query_dt[!is.na(hits_num), c("query_id", "hits_num")], hsps_dt)
+    hsps_dt[, query_hits := paste(query_id, hits_num, sep = "-")]
+  } else {
     hsps_dt[, hits_num := cumsum(c(1, diff(as.integer(xml2::xml_text(
       xml2::xml_find_all(x = blast_xml, xpath = "//Hsp_num")))) != 1))]
   }
-  #Merge hits and hsps
-  dt_hits_hsps <- data.table::merge.data.table(x = hits_dt, y = hsps_dt,
-                                               by = "hits_num", all.x = TRUE)
+  
+  # Merge hits and hsps
+  if("query_hits" %in% colnames(hsps_dt)){
+    dt_hits_hsps <- data.table::merge.data.table(
+      x = hits_dt, y = hsps_dt[, -c("query_id", "hits_num"), ],
+      by = "query_hits", all.x = TRUE)
+  } else {
+    dt_hits_hsps <- data.table::merge.data.table(
+      x = hits_dt, y = hsps_dt, by = "hits_num", all.x = TRUE)
+  }
+
   #Create new query_hits key in query_dt & hits_dt
   query_dt[, query_hits := paste(query_id, hits_num, sep = "-")]
   dt_hits_hsps[, query_hits := paste(query_id, hits_num, sep = "-")]
@@ -149,9 +158,7 @@ NCBI_BLAST_XML2DT <- function(xml_file){
   data.table::setnames(
     x = dt_query_hits_hsps, old = "hits_num.x", new = "hits_num")
   BLAST.dt <- dt_query_hits_hsps[, -c("query_id.y", "hits_num.y"), ]
-  # BLAST.dt <- data.table::merge.data.table(x = hits_dt, y = hsps_dt,
-  #                                          by = "hits_num", all.y = TRUE)
-  
+
   # rm intermediate tables
   rm(
     dt_hits_hsps, dt_query_hits, dt_query_hits_hsps, hits_dt, hsps_dt,
